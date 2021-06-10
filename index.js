@@ -190,7 +190,7 @@ function promptMembers() {
  * Cron Job: 10:30:00 AM Europe/Zagreb - Go through each standup and output the responses to the channel
  */
 schedule.scheduleJob(
-  { hour: 10, minute: 30, dayOfWeek: new schedule.Range(1, 5), tz: "Etc/UTC" },
+  { hour: 18, minute: 30, dayOfWeek: new schedule.Range(1, 5), tz: "Etc/UTC" },
   (time) => {
     console.log(`[${time}] - CRON JOB 2 START`);
     standupModel
