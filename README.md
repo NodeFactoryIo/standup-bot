@@ -21,14 +21,14 @@ The bot will then create an entry in the `MongoDB` database for the server, crea
 
 | Name    | Description                                        | Usage                                   | Server or DM |                                             |
 | ------- | -------------------------------------------------- | --------------------------------------- | ------------ | ------------------------------------------- |
-| `help`  | *Shows all commands*                               | `!help [optional command name]`         | **_both_**   |                                             |
-| `list`  | *List of all members participating in the standup* | `!list`                                 | Server       |                                             |
-| `am`    | *Adds a new member to the standup*                 | `!am @<user> @<optional_user> ...`      | Server       |                                             |
-| `rm`    | *Removes a member from the standup*                | `!rm @<user> @<optional_user> ...`      | Server       |                                             |
-| `reset` | *Resets the standup*                               | `!reset`                                | Server       | Use with caution, resets everything         |
-| `show`  | *Shows standup prompt*                             | `!show`                                 | **_both_**   |                                             |
-| `reply` | *Reply to standup prompt*                          | `!reply @<optional_serverId> [message]` | DM           | `optional_server_id`: for multiple standups |
-| `view`  | *View your standup response*                       | `!view @<optional_serverId>`            | DM           | `optional_server_id`: for multiple standups |
+| `help`  | *Shows all commands*                               | `?help [optional command name]`         | **_both_**   |                                             |
+| `list`  | *List of all members participating in the standup* | `?list`                                 | Server       |                                             |
+| `am`    | *Adds a new member to the standup*                 | `?am @<user> @<optional_user> ...`      | Server       |                                             |
+| `rm`    | *Removes a member from the standup*                | `?rm @<user> @<optional_user> ...`      | Server       |                                             |
+| `reset` | *Resets the standup*                               | `?reset`                                | Server       | Use with caution, resets everything         |
+| `show`  | *Shows standup prompt*                             | `?show`                                 | **_both_**   |                                             |
+| `reply` | *Reply to standup prompt*                          | `?reply @<optional_serverId> [message]` | DM           | `optional_server_id`: for multiple standups |
+| `view`  | *View your standup response*                       | `?view @<optional_serverId>`            | DM           | `optional_server_id`: for multiple standups |
 
 
 ### Usage
