@@ -17,7 +17,7 @@ const schedule = require("node-schedule");
 const standupModel = require("./models/standup.model");
 const showPromptCommand = require("./commands/showPrompt");
 
-const PREFIX = "?";
+const PREFIX = "!";
 
 const standupIntroMessage = new MessageEmbed()
   .setColor("#ff9900")
