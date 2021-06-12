@@ -1,8 +1,6 @@
 # Standup Bot 🤖
 > Discord bot for Scrum daily standups
 
-**THIS BOT IS NOT IN USE ANYMORE**
-
 ## How-To:
 
 #### *Disclaimer:* 
@@ -11,13 +9,16 @@ This bot is not meant to replace your daily standups outright. It is more of a h
 
 ### Initial Setup 
 
-[~~**Click Here**~~](https://www.youtube.com/watch?v=xfr64zoBTAQ) to add the bot to your server. 
-> Note that the above requires you to have the **Manage Server** permission in this server  
+1. Fork the repository
+2. Configure your Discord API Keys and MongoDB credentials
+3. Configure the cadence and duration, and other details of your standups on the `__config__.js` file
+4. Add your bot to the server
+  > Note that the above requires you to have the **Manage Server** permission in this server  
 
-The bot will then create an entry in the `MongoDB` database for the server, create the text channel `#daily-standups` and send an introduction.
+The bot will then create an entry in the `MongoDB` database for the server, create the text channel `#daily-standups` and send an introduction. Feel free to rename the newly created channel.
 
 ### Commands
-> The prefix for this bot is `!`
+> The default prefix for this bot is `!`
 
 | Name    | Description                                        | Usage                                   | Server or DM |                                             |
 | ------- | -------------------------------------------------- | --------------------------------------- | ------------ | ------------------------------------------- |
@@ -32,7 +33,7 @@ The bot will then create an entry in the `MongoDB` database for the server, crea
 
 
 ### Usage
-> Standup time is set to `10:30:00 PM EST` every weekday
+> Standup time and cadence is set through the `config.js` file.
 
 Anytime before the standup time, added members must DM the bot with the `reply` followed by their message. The bot will then upload this response to the database.    
 Come standup time, the bot will create an Embed with all collected member responses *and* will include a `Hooligans` section with mentions of members who did not participate.  
@@ -44,7 +45,6 @@ After the message has been posted, the bot will delete all member responses, thu
 
 - `Discord.js` and `node-schedule` for cron jobs
 - `MongoDB` with `mongoose`
-- `Heroku` for hosting
 - :heart:
 
 
