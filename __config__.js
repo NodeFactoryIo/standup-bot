@@ -3,18 +3,28 @@
 */
 
 const { MessageEmbed } = require("discord.js");
+const internal = require("stream");
 
 const PREFIX = "!"; // The token used to call functions from the bot. Change this if commands are conflicting with another bot.
 
 const timezone = 'Etc/UTC';
-const days = [1,3,5];  
+const days = [1,3,5];  // Days should be a list of numbers from 0 to 6, where 0 = Sunday
 const startTime = { hour: 1, minute: 00,};
 const endTime = { hour: 21, minute: 30 };
 
+/*
 // TODO: minor error handling for config params
-if (0 > days > 6 ) {
-    throw 'Days should be a list of numbers from 0 to 6, where 0 = Sunday';
-}
+if (typeof days != "object" ) {
+    throw "Input days as an array of numbers"
+};
+for (day in days) {
+    if (typeof day != "number" ) {
+        throw "only numbers allowed"
+    } else if (0 > day > 6 ) {
+        throw "Days should be a list of numbers from 0 to 6, where 0 = Sunday";
+    }
+};
+*/
 
 // Below are the welcome messages as well as instructions sent to the discord server once the bot is added for the first time.
 const standupIntroMessage = new MessageEmbed()
