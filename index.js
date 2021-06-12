@@ -16,45 +16,10 @@ const { Client, MessageEmbed, Collection } = require("discord.js");
 const schedule = require("node-schedule");
 const standupModel = require("./models/standup.model");
 const showPromptCommand = require("./commands/showPrompt");
+const config = require("./__config__")
 
 const PREFIX = "!";
 
-const standupIntroMessage = new MessageEmbed()
-  .setColor("#ff9900")
-  .setTitle("Daily Standup")
-  .setURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-  .setDescription(
-    "This is the newly generated text channel used for daily standups! :tada:"
-  )
-  .addFields(
-    {
-      name: "Introduction",
-      value: `Hi! I'm Stan D. Upbot and I will be facilitating your daily standups from now on.\nTo view all available commands, try \`${PREFIX}help\`.`,
-    },
-    {
-      name: "How does this work?",
-      value: `Anytime before the standup time \`10:30 AM GMT+2\`, members would private DM me with the command \`${PREFIX}show\`, I will present the standup prompt and they will type their response using the command \`${PREFIX}reply @<optional_serverId> [your-message-here]\`. I will then save their response in my *secret special chamber of data*, and during the designated standup time, I would present everyone's answer to \`#daily-standups\`.`,
-    },
-    {
-      name: "Getting started",
-      value: `*Currently*, there are no members in the standup! To add a member try \`${PREFIX}am <User>\`.`,
-    }
-  )
-  .setFooter(
-    "https://github.com/nodefactoryio/standup-bot",
-    "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-  )
-  .setTimestamp();
-
-const dailyStandupSummary = new MessageEmbed()
-  .setColor("#ff9900")
-  .setTitle("Daily Standup")
-  .setURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-  .setFooter(
-    "https://github.com/nodefactoryio/standup-bot",
-    "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-  )
-  .setTimestamp();
 
 // lists .js files in commands dir
 const commandFiles = fs
@@ -70,7 +35,6 @@ for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
   bot.commands.set(command.name, command);
 }
-
 
 mongoose
 .connect(process.env.MONGO_URI, {
@@ -136,7 +100,7 @@ bot.on("guildCreate", async (guild) => {
     .then(() => console.log("Howdy!"))
     .catch((err) => console.error(err));
 
-  await channel.send(standupIntroMessage);
+  await channel.send(config.standupIntroMessage);
 });
 
 // delete the mongodb entry
@@ -148,88 +112,93 @@ bot.on("guildDelete", (guild) => {
 });
 
 /**
- * Cron Job: 08:00:00 AM Europe/Zagreb - Go through each member and ask for standup
+ * This function loops through the days pre-configured on the `__config__.js` file and sets up the stand ups on those .
  */
-schedule.scheduleJob(
-  { hour: 8, minute: 0, dayOfWeek: new schedule.Range(1, 5), tz: "Etc/UTC" },
-  (time) => {
-    console.log(`[${time}] - CRON JOB 1 START`);
-    promptMembers();
-  }
-);
+for (day in config.days) {
+  /**
+   * Cron Job 1: Go through each member and ask for standup
+   */
+  schedule.scheduleJob(
+    { hour: config.startTime.hour, minute: config.startTime.minute, dayOfWeek: day, tz: configureBot.standups.timezone  },
+    (time) => {
+      console.log(`[${time}] - CRON JOB 1 START`);
+      promptMembers();
+    }
+  );
 
-function promptMembers() {
-  standupModel
-      .find()
-      .then((standups) => {
-        standups.forEach(async (standup) => {
-          const members = new Set();
-          standup.members.forEach((member) => {
-            members.add(member);
-          })
-          console.log("Sending prompt to", members);
-          members.forEach(async (member) => {
-            try {
-              const user = await bot.users.fetch(member);
-              if(user) {
-                user.send(showPromptCommand.message).catch(e => console.log("Failed to send message to", member, e));
-                console.log("Sent prompt to ", user.username);
-              } else {
-                console.log("Failed to send message to", member)
-              }
-            } catch(e) {
-              console.log("Failed to send message to", member, e);
-            }
-          })
-        });
-      })
-      .catch((err) => console.error(err));
-}
-
-/**
- * Cron Job: 10:30:00 AM Europe/Zagreb - Go through each standup and output the responses to the channel
- */
-schedule.scheduleJob(
-  { hour: 18, minute: 30, dayOfWeek: new schedule.Range(1, 5), tz: "Etc/UTC" },
-  (time) => {
-    console.log(`[${time}] - CRON JOB 2 START`);
+  function promptMembers() {
     standupModel
-      .find()
-      .then((standups) => {
-        standups.forEach((standup) => {
-          let memberResponses = [];
-          let missingMembers = [];
-          standup.members.forEach((id) => {
-            if (standup.responses.has(id)) {
-              memberResponses.push({
-                name: `-`,
-                value: `<@${id}>\n${standup.responses.get(id)}`,
-              });
-              standup.responses.delete(id);
-            } else {
-              missingMembers.push(id);
-            }
+        .find()
+        .then((standups) => {
+          standups.forEach(async (standup) => {
+            const members = new Set();
+            standup.members.forEach((member) => {
+              members.add(member);
+            })
+            console.log("Sending prompt to", members);
+            members.forEach(async (member) => {
+              try {
+                const user = await bot.users.fetch(member);
+                if(user) {
+                  user.send(showPromptCommand.message).catch(e => console.log("Failed to send message to", member, e));
+                  console.log("Sent prompt to ", user.username);
+                } else {
+                  console.log("Failed to send message to", member)
+                }
+              } catch(e) {
+                console.log("Failed to send message to", member, e);
+              }
+            })
           });
-          let missingString = "Hooligans: ";
-          if (!missingMembers.length) missingString += ":man_shrugging:";
-          else missingMembers.forEach((id) => (missingString += `<@${id}> `));
-          bot.channels.cache
-            .get(standup.channelId)
-            .send(
-              new MessageEmbed(dailyStandupSummary)
-                .setDescription(missingString)
-                .addFields(memberResponses)
-            );
-          standup
-            .save()
-            .then(() =>
-              console.log(`[${new Date()}] - ${standup._id} RESPONSES CLEARED`)
-            )
-            .catch((err) => console.error(err));
-        });
-      })
-      .catch((err) => console.error(err));
+        })
+        .catch((err) => console.error(err));
   }
-);
+
+  /**
+   * Cron Job 2: Go through each standup and output the responses to the channel
+   */
+  schedule.scheduleJob(
+    { hour: config.endTime.hour, minute: config.endTime.minute, dayOfWeek: day, tz: configureBot.standups.timezone },
+    (time) => {
+      console.log(`[${time}] - CRON JOB 2 START`);
+      standupModel
+        .find()
+        .then((standups) => {
+          standups.forEach((standup) => {
+            let memberResponses = [];
+            let missingMembers = [];
+            standup.members.forEach((id) => {
+              if (standup.responses.has(id)) {
+                memberResponses.push({
+                  name: `-`,
+                  value: `<@${id}>\n${standup.responses.get(id)}`,
+                });
+                standup.responses.delete(id);
+              } else {
+                missingMembers.push(id);
+              }
+            });
+            let missingString = "Hooligans: ";
+            if (!missingMembers.length) missingString += ":man_shrugging:";
+            else missingMembers.forEach((id) => (missingString += `<@${id}> `));
+            bot.channels.cache
+              .get(standup.channelId)
+              .send(
+                new MessageEmbed(config.dailyStandupSummary)
+                  .setDescription(missingString)
+                  .addFields(memberResponses)
+              );
+            standup
+              .save()
+              .then(() =>
+                console.log(`[${new Date()}] - ${standup._id} RESPONSES CLEARED`)
+              )
+              .catch((err) => console.error(err));
+          });
+        })
+        .catch((err) => console.error(err));
+    }
+  );
+}
 
 bot.login(process.env.DISCORD_TOKEN);
