@@ -10,15 +10,15 @@ This bot is not meant to replace your daily standups outright. It is more of a h
 ### Initial Setup 
 
 1. Fork the repository
-2. Configure your Discord API Keys
-3. Configure the cadence and duration of your standups on the `__config__.js` file
+2. Configure your Discord API Keys and MongoDB credentials
+3. Configure the cadence and duration, and other details of your standups on the `__config__.js` file
 4. Add your bot to the server
   > Note that the above requires you to have the **Manage Server** permission in this server  
 
 The bot will then create an entry in the `MongoDB` database for the server, create the text channel `#daily-standups` and send an introduction. Feel free to rename the newly created channel.
 
 ### Commands
-> The prefix for this bot is `!`
+> The default prefix for this bot is `!`
 
 | Name    | Description                                        | Usage                                   | Server or DM |                                             |
 | ------- | -------------------------------------------------- | --------------------------------------- | ------------ | ------------------------------------------- |

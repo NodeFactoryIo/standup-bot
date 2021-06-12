@@ -4,10 +4,12 @@
 
 const { MessageEmbed } = require("discord.js");
 
+const PREFIX = "!"; // The token used to call functions from the bot. Change this if commands are conflicting with another bot.
+
 const timezone = 'Etc/UTC';
 const days = [1,3,5];  
-const startTime = { hour: 1, minutes: 00,};
-const endTime = { hour: 21, minutes: 30 };
+const startTime = { hour: 1, minute: 00,};
+const endTime = { hour: 21, minute: 30 };
 
 // TODO: minor error handling for config params
 if (0 > days > 6 ) {

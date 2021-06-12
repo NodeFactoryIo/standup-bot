@@ -18,8 +18,8 @@ const standupModel = require("./models/standup.model");
 const showPromptCommand = require("./commands/showPrompt");
 const config = require("./__config__")
 
-const PREFIX = "!";
 
+const PREFIX = config.PREFIX;
 
 // lists .js files in commands dir
 const commandFiles = fs
@@ -44,12 +44,11 @@ mongoose
 })
 .catch(() => console.log("Ruh Roh!"));
 
-
 mongoose.connection.once("open", () => console.log("mongoDB connected"));
 
 bot.once("ready", () => {
   console.log("Discord Bot Ready")
-  if(Date.now() < (new Date()).setHours(10, 30)) {
+  if(Date.now() < (new Date()).setHours(config.endTime.hour, config.endTime.minute)) {
     promptMembers();
   }
 });
