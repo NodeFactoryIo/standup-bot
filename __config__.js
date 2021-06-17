@@ -8,9 +8,6 @@ const internal = require("stream");
 const PREFIX = "!"; // The token used to call functions from the bot. Change this if commands are conflicting with another bot.
 
 const timezone = 'Etc/UTC';
-const days = [1,3,5];  // Days should be a list of numbers from 0 to 6, where 0 = Sunday
-const startTime = { hour: 1, minute: 00,};
-const endTime = { hour: 21, minute: 30 };
 
 /*
 // TODO: minor error handling for config params
